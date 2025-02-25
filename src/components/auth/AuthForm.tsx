@@ -131,13 +131,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ type: initialType }) => {
             </div>
           </div>
 
-          {type === 'login' && (
+{/*           {type === 'login' && (
             <div className="text-right">
               <a href="#" className="text-sm text-red-600 hover:underline">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
-          )}
+          )} */}
 
           {error && (
             <div className="text-red-500 text-sm bg-red-50 p-3 rounded">
