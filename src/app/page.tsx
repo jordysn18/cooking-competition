@@ -5,7 +5,9 @@ import AuthForm from '@/components/auth/AuthForm';
 import Link from 'next/link';
 import GameCards from '@/components/cards/GameCards';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { getDatabase, ref, get } from 'firebase/database';
 
+// Definir las propiedades y el estado del ErrorBoundary
 interface ErrorBoundaryProps {
   children: ReactNode;
 }
@@ -14,6 +16,7 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
+// Componente con tipos correctos
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
@@ -26,6 +29,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    // Puedes registrar el error en un servicio de reporte
     console.error("Error en componente:", error, errorInfo);
   }
 
@@ -56,14 +60,42 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 export default function Home() {
   const { user, loading } = useAuth();
   const [isPageReady, setIsPageReady] = useState(false);
+  const [userName, setUserName] = useState('');
 
-  // Asegurarse de que el componente solo se renderice después de que tengamos
-  // información de autenticación completa
   useEffect(() => {
+    if (!loading && user) {
+      // Si tenemos el nombre, usarlo directamente
+      if (user.name) {
+        setUserName(user.name);
+      } 
+      // Si no tenemos nombre, intentar obtenerlo de la base de datos
+      else {
+        const fetchUserName = async () => {
+          try {
+            const db = getDatabase();
+            const userRef = ref(db, `users/${user.id}`);
+            const snapshot = await get(userRef);
+            const userData = snapshot.val();
+            
+            if (userData?.name) {
+              setUserName(userData.name);
+            } else {
+              setUserName(user.email || '');
+            }
+          } catch (error) {
+            console.error("Error fetching user name:", error);
+            setUserName(user.email || '');
+          }
+        };
+        
+        fetchUserName();
+      }
+    }
+    
     if (!loading) {
       setIsPageReady(true);
     }
-  }, [loading]);
+  }, [user, loading]);
 
   // Mostrar spinner mientras carga
   if (loading || !isPageReady) {
@@ -75,11 +107,6 @@ export default function Home() {
     return (
       <div>
         <AuthForm type="login" />
-        <div className="text-center mt-4">
-          <Link href="/register" className="text-indigo-600 hover:text-indigo-500">
-            ¿No tienes cuenta? Regístrate
-          </Link>
-        </div>
       </div>
     );
   }
@@ -89,7 +116,7 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6 text-center">
-          Bienvenido, {user.name || user.email}
+          Bienvenido, {userName || user.email || ''}
         </h1>
         
         {/* Envolver GameCards en un error boundary */}

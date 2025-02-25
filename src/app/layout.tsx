@@ -6,7 +6,7 @@ import Navbar from "@/components/shared/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cooking Wheel",
+  title: "Cooking Cards",
   description: "Concurso de cocina familiar",
 };
 

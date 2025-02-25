@@ -250,7 +250,7 @@ export default function GameCards() {
                         }
                       }}
                     >
-                      <div className="card-front bg-indigo-600 rounded-lg shadow-lg flex items-center justify-center">
+                      <div className="card-front bg-orange-500 rounded-lg shadow-lg flex items-center justify-center">
                         <span className="text-white text-4xl">?</span>
                       </div>
 

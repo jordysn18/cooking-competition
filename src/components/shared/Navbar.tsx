@@ -24,7 +24,7 @@ const Navbar = () => {
                 <Menu size={24} />
               </button>
               <Link href="/" className="ml-4 text-xl font-bold text-indigo-600">
-                Cooking Wheel
+                Cooking Cards
               </Link>
             </div>
             <div className="flex items-center">

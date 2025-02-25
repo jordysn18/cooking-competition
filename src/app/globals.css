@@ -26,3 +26,13 @@
 .card-back {
   transform: rotateY(180deg);
 }
+
+.auth-background {
+  background-image: url('/mobileBackground');
+}
+
+@media (min-width: 768px) {
+  .auth-background {
+    background-image: url('/desktopBackground');
+  }
+}
